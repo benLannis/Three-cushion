@@ -22,6 +22,8 @@ class Cueball:
         if self.ismoving():
             # we don't want to allow shooting the cue ball while it's still in motion
             return
+
+        # do we want to normalize these at all?
         self.xvel = targetx - self.xpos
         self.yvel = targety - self.ypos
         
