@@ -8,7 +8,7 @@ width = 1200
 height = 700
 
 screen = pygame.display.set_mode((width, height))
-applegreen = (0, 150, 255)
+felt_blue = (0, 150, 255)
 black = (0, 0, 0) 
 white = (255, 255, 255)
 red = (255, 0, 0)
@@ -19,7 +19,8 @@ target = Target(width/2, height/2, 10, 3)
 
 running = True
 while running:
-    screen.fill(applegreen)
+    screen.fill(white)
+    pygame.draw.rect(screen, felt_blue, pygame.Rect(width/2 - 500, height/2 - 250, 1000, 500))
     pygame.draw.circle(screen, white, (cueball.xpos, cueball.ypos), cueball.radius)
     pygame.draw.rect(screen, black, pygame.Rect(width/2 - 500, height/2 - 250, 1000, 500),  10)
     cueball.update()
@@ -28,7 +29,7 @@ while running:
     target.ypos = y
     #draw target
     pygame.draw.circle(screen, red, (target.xpos, target.ypos), target.outradius)
-    pygame.draw.circle(screen, applegreen, (target.xpos, target.ypos), target.outradius - 2)
+    pygame.draw.circle(screen, felt_blue, (target.xpos, target.ypos), target.outradius - 2)
     pygame.draw.circle(screen, red, (target.xpos, target.ypos), target.inradius)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
