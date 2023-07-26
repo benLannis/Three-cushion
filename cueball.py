@@ -21,15 +21,12 @@ class Cueball:
     def shoot(self, targetx, targety):
         if self.ismoving():
             # we don't want to allow shooting the cue ball while it's still in motion
-            print(self.xvel, self.yvel)
-            print("ok")
             return
         self.xvel = targetx - self.xpos
         self.yvel = targety - self.ypos
-        print(self.xvel, self.yvel)
         
     def update(self):
-        if abs(self.xvel) < 0.5 and abs(self.yvel) < 0.5:
+        if abs(self.xvel) < 0.7 and abs(self.yvel) < 0.7:
             self.xvel = 0
             self.yvel = 0
             return
@@ -44,9 +41,9 @@ class Cueball:
         self.yvel -= self.yaccel
 
         # what to do when ball espies rail
-        if self.ypos <= self.radius or self.ypos >= self.height - self.radius:
+        if self.ypos <= self.height/2 - 240 + self.radius or self.ypos >= self.height/2 + 240 - self.radius:
             # hits top or bottom rail
             self.yvel *= -1
-        if self.xpos <= self.radius or self.xpos >= self.width - self.radius:
+        if self.xpos <= self.width/2 - 490 + self.radius or self.xpos >= self.width/2 + 490 - self.radius:
             # hits left or right rail
             self.xvel *= -1
