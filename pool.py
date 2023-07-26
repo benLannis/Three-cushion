@@ -9,10 +9,9 @@ height = 500
 screen = pygame.display.set_mode((width, height))
 applegreen = (0, 150, 255)
 white = (0, 0, 0)
-self.yvel -= self.yaccel
 
 # global variables
-cueball = Cueball(50, 50, 10, 0.7)
+cueball = Cueball(50, 50, 10, 1.3, width, height)
 
 running = True
 while running:
@@ -28,7 +27,6 @@ while running:
                 print("pressed")
                 x, y = pygame.mouse.get_pos()
                 cueball.shoot(x, y)
-
     pygame.display.update()
 
 pygame.quit()
