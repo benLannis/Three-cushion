@@ -3,20 +3,22 @@ from cueball import Cueball
 
 pygame.init()
 
-width = 1000
-height = 500
+width = 1200
+height = 700
 
 screen = pygame.display.set_mode((width, height))
 applegreen = (0, 150, 255)
-white = (0, 0, 0)
+black = (0, 0, 0) 
+white = (255, 255, 255)
 
 # global variables
-cueball = Cueball(50, 50, 10, 1.3, width, height)
+cueball = Cueball(width/2, height/2, 10, 1.3, width, height)
 
 running = True
 while running:
     screen.fill(applegreen)
     pygame.draw.circle(screen, white, (cueball.xpos, cueball.ypos), cueball.radius)
+    #pygame.draw.rect(screen, black, pygame.Rect(30, 30, 60, 60),  2)
     cueball.update()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
