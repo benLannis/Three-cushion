@@ -1,5 +1,6 @@
 import pygame, math
 from cueball import Cueball
+from target import Target
 
 pygame.init()
 
@@ -10,13 +11,23 @@ screen = pygame.display.set_mode((width, height))
 applegreen = (0, 150, 255)
 black = (0, 0, 0) 
 white = (255, 255, 255)
+red = (255, 0, 0)
 
 # global variables
 cueball = Cueball(width/2, height/2, 10, 1.3, width, height)
+target = Target(width/2, height/2, 10, 3)
 
 running = True
 while running:
     screen.fill(applegreen)
+    x, y = pygame.mouse.get_pos()
+    target.xpos = x
+    target.ypos = y
+    #draw target
+    pygame.draw.circle(screen, red, (target.xpos, target.ypos), target.outradius)
+    pygame.draw.circle(screen, applegreen, (target.xpos, target.ypos), target.outradius - 2)
+    pygame.draw.circle(screen, red, (target.xpos, target.ypos), target.inradius)
+    #draw cue ball
     pygame.draw.circle(screen, white, (cueball.xpos, cueball.ypos), cueball.radius)
     #pygame.draw.rect(screen, black, pygame.Rect(30, 30, 60, 60),  2)
     cueball.update()
