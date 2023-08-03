@@ -23,8 +23,8 @@ class Cueball:
         return self.xvel != 0 or self.yvel != 0
     
     def shoot(self, targetx, targety):
-        self.xvel = 2 * (targetx - self.xpos)
-        self.yvel = 2 * (targety - self.ypos)
+        self.xvel = 2 * (self.xpos - targetx)
+        self.yvel = 2 * (self.ypos - targety)
         
     def update(self):
         pygame.draw.circle(self.surface, self.color, (self.xpos, self.ypos), self.radius)
