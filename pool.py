@@ -1,9 +1,12 @@
-import pygame, math
+import pygame, numpy, math
 from cueball import Cueball
-from target import Target
+from cue import Cue
 from ballsack import Ballsack
 
 pygame.init()
+
+FPS = 60
+clock = pygame.time.Clock()
 
 width = 1200
 height = 700
@@ -15,15 +18,12 @@ white = (255, 255, 255)
 red = (255, 0, 0)
 yellow = (255, 215, 0)
 
-clock = pygame.time.Clock()
-fps = 60
-
 # global variables
 whiteball = Cueball(width/2 + 230, height/2 - 51, 10, 2, width, height, screen, white)
 redball = Cueball(width/2 - 230, height/2, 10, 2, width, height, screen, red)
 yellowball = Cueball(width/2 + 230, height/2, 10, 2, width, height, screen, yellow)
 bs = Ballsack([whiteball, redball, yellowball])
-target = Target(width/2, height/2, 10, 3)
+cue = Cue(whiteball.xpos, whiteball.ypos, 0)
 
 running = True
 while running:
@@ -39,13 +39,30 @@ while running:
         pygame.draw.circle(screen, white, (width/2 + 485, height/2 + i), 2)
     #cueball.update()
     bs.update()
-    x, y = pygame.mouse.get_pos()
-    target.xpos = x
-    target.ypos = y
-    #draw target
-    pygame.draw.circle(screen, red, (target.xpos, target.ypos), target.outradius)
-    pygame.draw.circle(screen, felt_blue, (target.xpos, target.ypos), target.outradius - 2)
-    pygame.draw.circle(screen, red, (target.xpos, target.ypos), target.inradius)
+    if not whiteball.is_moving():
+        #compute cue attributes
+        x, y = pygame.mouse.get_pos()
+        vector1 = [x - whiteball.xpos, y - whiteball.ypos]
+        vector2 = [1, 0]
+        dot = vector1[0] * vector2[0] + vector1[1] * vector2[1]
+        magnitude = (math.sqrt(vector1[0] * vector1[0] + vector1[1] * vector1[1])) * (math.sqrt(vector2[0] * vector2[0] + vector2[1] * vector2[1]))
+        if y >= whiteball.ypos:
+            cue.angle = math.acos(dot/magnitude)
+        else:
+            cue.angle = -math.acos(dot/magnitude)
+        points = [(whiteball.xpos + 20, whiteball.ypos - 4), (whiteball.xpos + 20, whiteball.ypos + 4), (whiteball.xpos + 450, whiteball.ypos + 4), (whiteball.xpos + 450, whiteball.ypos - 4)]
+        #draw the cue
+        #translate vectors back to the origin
+        for i in range(len(points)):
+            points[i] = ((points[i][0] - whiteball.xpos), (points[i][1] - whiteball.ypos))
+        #apply rotation matrix
+        for i in range(len(points)):
+            points[i] = ((points[i][0] * math.cos(cue.angle) - points[i][1] * math.sin(cue.angle)), (points[i][0] * math.sin(cue.angle) + points[i][1] * math.cos(cue.angle)))
+        #translate vectors back to original position
+        for i in range(len(points)):
+            points[i] = ((points[i][0] + whiteball.xpos), (points[i][1] + whiteball.ypos))
+        pygame.draw.polygon(screen, black, points)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -55,6 +72,6 @@ while running:
                 x, y = pygame.mouse.get_pos()
                 bs.shoot_cue(x, y)
     pygame.display.update()
-    clock.tick(fps)
+    clock.tick(FPS)
 
 pygame.quit()
