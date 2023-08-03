@@ -1,7 +1,7 @@
 import pygame, math
 
 class Cueball:
-    def __init__(self, xpos, ypos, radius, friction, width, height):
+    def __init__(self, xpos, ypos, radius, friction, width, height, surface, color):
         self.xpos = xpos
         self.ypos = ypos
         self.radius = radius
@@ -14,38 +14,39 @@ class Cueball:
         # width and height of the pool table
         self.width = width
         self.height = height
+
+        # stuff needed to blit
+        self.surface = surface
+        self.color = color
         
-    def ismoving(self):
+    def is_moving(self):
         return self.xvel != 0 or self.yvel != 0
     
     def shoot(self, targetx, targety):
-        if self.ismoving():
-            # we don't want to allow shooting the cue ball while it's still in motion
-            return
-
-        # do we want to normalize these at all?
-        self.xvel = targetx - self.xpos
-        self.yvel = targety - self.ypos
+        self.xvel = 2 * (targetx - self.xpos)
+        self.yvel = 2 * (targety - self.ypos)
         
     def update(self):
-        if abs(self.xvel) < 0.7 and abs(self.yvel) < 0.7:
+        pygame.draw.circle(self.surface, self.color, (self.xpos, self.ypos), self.radius)
+        # ball is stationary
+        if abs(self.xvel) < 1 and abs(self.yvel) < 1:
             self.xvel = 0
             self.yvel = 0
             return
         
-        # slow down the ball via acceleration
+        # ball is translating, slow it down via acceleration
         self.xpos += 0.01 * self.xvel
         self.ypos += 0.01 * self.yvel
-        norm = math.sqrt(self.xvel * self.xvel + self.yvel * self.yvel)
+        norm = math.hypot(self.xvel, self.yvel)
         self.xaccel = self.friction * self.xvel / norm
         self.yaccel = self.friction * self.yvel / norm
         self.xvel -= self.xaccel
         self.yvel -= self.yaccel
 
-        # what to do when ball espies rail
-        if self.ypos <= self.height/2 - 240 + self.radius or self.ypos >= self.height/2 + 240 - self.radius:
+        # ball espies rail
+        if self.ypos <= self.height/2 - 215 + self.radius or self.ypos >= self.height/2 + 217 - self.radius:
             # hits top or bottom rail
             self.yvel *= -1
-        if self.xpos <= self.width/2 - 490 + self.radius or self.xpos >= self.width/2 + 490 - self.radius:
+        if self.xpos <= self.width/2 - 470 + self.radius or self.xpos >= self.width/2 + 470 - self.radius:
             # hits left or right rail
             self.xvel *= -1
