@@ -1,6 +1,7 @@
 import pygame, math
 from cueball import Cueball
 from target import Target
+from ballsack import Ballsack
 
 pygame.init()
 
@@ -12,18 +13,32 @@ felt_blue = (0, 150, 255)
 black = (0, 0, 0) 
 white = (255, 255, 255)
 red = (255, 0, 0)
+yellow = (255, 215, 0)
+
+clock = pygame.time.Clock()
+fps = 60
 
 # global variables
-cueball = Cueball(width/2, height/2, 10, 1.3, width, height)
+whiteball = Cueball(width/2 + 230, height/2 - 51, 10, 2, width, height, screen, white)
+redball = Cueball(width/2 - 230, height/2, 10, 2, width, height, screen, red)
+yellowball = Cueball(width/2 + 230, height/2, 10, 2, width, height, screen, yellow)
+bs = Ballsack([whiteball, redball, yellowball])
 target = Target(width/2, height/2, 10, 3)
 
 running = True
 while running:
     screen.fill(white)
+    # draw table
     pygame.draw.rect(screen, felt_blue, pygame.Rect(width/2 - 500, height/2 - 250, 1000, 500))
-    pygame.draw.circle(screen, white, (cueball.xpos, cueball.ypos), cueball.radius)
-    pygame.draw.rect(screen, black, pygame.Rect(width/2 - 500, height/2 - 250, 1000, 500),  10)
-    cueball.update()
+    pygame.draw.rect(screen, black, pygame.Rect(width/2 - 500, height/2 - 250, 1000, 500), 30)
+    for i in range(-460, 461, 115):
+        pygame.draw.circle(screen, white, (width/2 + i, height/2 - 235), 2)
+        pygame.draw.circle(screen, white, (width/2 + i, height/2 + 235), 2)
+    for i in range(-204, 205, 102):
+        pygame.draw.circle(screen, white, (width/2 - 485, height/2 + i), 2)
+        pygame.draw.circle(screen, white, (width/2 + 485, height/2 + i), 2)
+    #cueball.update()
+    bs.update()
     x, y = pygame.mouse.get_pos()
     target.xpos = x
     target.ypos = y
@@ -38,7 +53,8 @@ while running:
             # Events will include what button was pushed, which you can check in if statements
             if event.button == pygame.BUTTON_LEFT:
                 x, y = pygame.mouse.get_pos()
-                cueball.shoot(x, y)
+                bs.shoot_cue(x, y)
     pygame.display.update()
+    clock.tick(fps)
 
 pygame.quit()
