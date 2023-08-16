@@ -1,2 +1,2 @@
-# Three-cushion
-Three-cushion carom billiards in pygame
+# Phenomenological framework for all forms of carom
+Work in progress. 
