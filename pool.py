@@ -1,4 +1,4 @@
-import pygame, numpy, math
+import pygame, math
 from cueball import Cueball
 from cue import Cue
 from ballsack import Ballsack
@@ -39,7 +39,7 @@ while running:
         pygame.draw.circle(screen, white, (width/2 + 485, height/2 + i), 2)
     #cueball.update()
     bs.update()
-    if not whiteball.is_moving():
+    if bs.all_balls_stationary():
         #compute cue attributes
         x, y = pygame.mouse.get_pos()
         vector1 = [x - whiteball.xpos, y - whiteball.ypos]
