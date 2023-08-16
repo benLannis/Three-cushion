@@ -23,8 +23,8 @@ class Cueball:
         return self.xvel != 0 or self.yvel != 0
     
     def shoot(self, targetx, targety):
-        self.xvel = 2 * (self.xpos - targetx)
-        self.yvel = 2 * (self.ypos - targety)
+        self.xvel = 3 * (self.xpos - targetx)
+        self.yvel = 3 * (self.ypos - targety)
         
     def update(self):
         pygame.draw.circle(self.surface, self.color, (self.xpos, self.ypos), self.radius)
@@ -44,9 +44,19 @@ class Cueball:
         self.yvel -= self.yaccel
 
         # ball espies rail
+        espiedRail = False
         if self.ypos <= self.height/2 - 215 + self.radius or self.ypos >= self.height/2 + 217 - self.radius:
             # hits top or bottom rail
-            self.yvel *= -1
+            self.xvel *= 0.9
+            self.yvel *= -0.9
+            espiedRail = True
         if self.xpos <= self.width/2 - 470 + self.radius or self.xpos >= self.width/2 + 470 - self.radius:
             # hits left or right rail
-            self.xvel *= -1
+            self.xvel *= -0.9
+            self.yvel *= 0.9
+            espiedRail = True
+        if espiedRail:
+            # scuffed shit to make sure the ball doesn't get frozen to the rail literally
+            norm = math.hypot(self.xvel, self.yvel)
+            self.xpos += 3 * self.xvel / norm
+            self.ypos += 3 * self.yvel / norm
