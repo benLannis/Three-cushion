@@ -5,12 +5,15 @@ class Ballsack:
         # balls : Cueball list
         self.balls = balls
         # assume self.balls[0] is the cueball
-
-    def shoot_cue(self, targetx, targety):
+    def all_balls_stationary(self):
         for ball in self.balls:
             if ball.is_moving():
-                # don't want to allow shooting if any balls are still moving
-                return
+                return False
+        return True
+    def shoot_cue(self, targetx, targety):
+        if not self.all_balls_stationary():
+            # don't allow shooting until all balls are done moving
+            return
         self.balls[0].shoot(targetx, targety)
     def collision_helper(self, vx, vy, px, py):
         v0 = math.hypot(vx, vy)
@@ -27,10 +30,20 @@ class Ballsack:
         s = math.hypot(vax, vay)
         vax_hat = vax/s
         vay_hat = vay/s
-        return v0 * sin * vax_hat, v0 * sin * vay_hat, v0 * cos * vbx_hat, v0 * cos * vby_hat
+        #return v0 * sin * vax_hat, v0 * sin * vay_hat, v0 * cos * vbx_hat, v0 * cos * vby_hat
+        # phenomenological follow
+        followx = 100 * px / vb_len
+        followy = 100 * py / vb_len
+        
+        #'''
+        return (v0 * sin * vax_hat + followx,
+                v0 * sin * vay_hat + followy,
+                v0 * cos * vbx_hat + followx,
+                v0 * cos * vby_hat + followy)
+        #'''
         
     def resolve_collision(self, A, B):
-        assert math.hypot(A.xpos - B.xpos, A.ypos - B.ypos) <= A.radius + B.radius
+        # assert math.hypot(A.xpos - B.xpos, A.ypos - B.ypos) <= A.radius + B.radius
         vap_x, vap_y, vbp_x, vbp_y = self.collision_helper(A.xvel-B.xvel, A.yvel-B.yvel, B.xpos-A.xpos, B.ypos-A.ypos)
         return vap_x + B.xvel, vap_y + B.yvel, vbp_x + B.xvel, vbp_y + B.yvel
         
